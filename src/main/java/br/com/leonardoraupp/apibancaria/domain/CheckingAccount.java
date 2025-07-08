@@ -11,6 +11,10 @@ public class CheckingAccount extends Account {
         super(holder, agency, number);
     }
 
+    public CheckingAccount(String firstName, String lastName, String cpf, String email, LocalDate localDate, Integer agency, Integer number) {
+        super(new User(firstName, lastName, cpf, email, localDate), agency, number);
+    }
+
     @Override
     public User getHolder() {
         return this.holder;

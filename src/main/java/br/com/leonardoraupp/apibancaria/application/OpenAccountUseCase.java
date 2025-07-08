@@ -3,6 +3,7 @@ package br.com.leonardoraupp.apibancaria.application;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import br.com.leonardoraupp.apibancaria.application.response.OpenAccountResponse;
 import br.com.leonardoraupp.apibancaria.application.service.AccountService;
+import br.com.leonardoraupp.apibancaria.domain.Account;
 
 public class OpenAccountUseCase {
 
@@ -13,7 +14,7 @@ public class OpenAccountUseCase {
     }
 
     public OpenAccountResponse execute(OpenAccountRequest request) {
-//        accountService.createAccount();  // OpenAccountRequest -> Account(domain) -> OpenAccountResponse
-        return null;
+        Account account = accountService.createAccount(AccountMapper.toEntity(request));
+        return AccountMapper.toDTO(account);
     }
 }
