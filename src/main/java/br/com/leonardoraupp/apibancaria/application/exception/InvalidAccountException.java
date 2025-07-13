@@ -1,4 +1,7 @@
 package br.com.leonardoraupp.apibancaria.application.exception;
 
-public class InvalidAccountException {
+public class InvalidAccountException extends Exception {
+    public InvalidAccountException(String message) {
+        super(message);
+    }
 }

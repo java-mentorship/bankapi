@@ -1,6 +1,7 @@
 package br.com.leonardoraupp.apibancaria.controller;
 
 import br.com.leonardoraupp.apibancaria.application.OpenAccountUseCase;
+import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class AccountController {
     private OpenAccountUseCase openAccountUseCase;
 
     @PostMapping
-    public ResponseEntity<?> openAccount(@RequestBody OpenAccountRequest request) {
+    public ResponseEntity<?> openAccount(@RequestBody OpenAccountRequest request) throws InvalidAccountException {
         openAccountUseCase.execute(request);
         return ResponseEntity.ok("Success");
     }

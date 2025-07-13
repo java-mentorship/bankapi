@@ -1,5 +1,6 @@
 package br.com.leonardoraupp.apibancaria.application;
 
+import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import br.com.leonardoraupp.apibancaria.application.response.OpenAccountResponse;
 import br.com.leonardoraupp.apibancaria.application.service.AccountService;
@@ -13,8 +14,8 @@ public class OpenAccountUseCase {
         this.accountService = accountService;
     }
 
-    public OpenAccountResponse execute(OpenAccountRequest request) {
-        Account account = accountService.createAccount(AccountMapper.toEntity(request));
+    public OpenAccountResponse execute(OpenAccountRequest request) throws InvalidAccountException {
+        Account account = accountService.createAccount(AccountMapper.toDomain(request));
         return AccountMapper.toDTO(account);
     }
 }

@@ -5,7 +5,6 @@ import java.util.*;
 
 public abstract class Account {
     protected Integer id;
-    private static Integer generateId = 0;
     protected User holder;
     protected Double balance;
     protected Integer agency;
@@ -18,7 +17,6 @@ public abstract class Account {
     }
 
     public Account(User holder, Integer agency, Integer number) {
-        this.id = generateId++;
         this.holder = holder;
         this.agency = agency;
         this.number = number;
