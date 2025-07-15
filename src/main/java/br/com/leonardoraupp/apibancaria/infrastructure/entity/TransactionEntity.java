@@ -9,18 +9,15 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "user")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "transaction")
 @Getter
 @Setter
-public class UserEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-    private String name;
-    private String lastName;
-    private String cpf;
-    private String email;
-    private LocalDate birthDate;
+    private Integer id;
+    private Double value;
+    private LocalDate date;
 }
