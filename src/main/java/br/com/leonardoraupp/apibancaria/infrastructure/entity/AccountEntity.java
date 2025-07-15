@@ -27,6 +27,7 @@ public class AccountEntity {
     protected Integer agency;
     protected Integer number;
     protected LocalDate openingDate;
+    @OneToMany
     protected List<Transaction> transactions;
     @ManyToOne
     protected Bank bank;

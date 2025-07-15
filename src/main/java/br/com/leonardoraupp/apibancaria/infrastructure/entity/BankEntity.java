@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "bank")
 @AllArgsConstructor
@@ -16,5 +18,5 @@ import lombok.Setter;
 @Setter
 public class BankEntity {
     @OneToMany
-    private AccountEntity accounts;
+    private Set<AccountEntity> accounts;
 }
