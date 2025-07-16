@@ -16,6 +16,6 @@ public class OpenAccountUseCase {
 
     public OpenAccountResponse execute(OpenAccountRequest request) throws InvalidAccountException {
         Account account = accountService.createAccount(AccountMapper.toDomain(request));
-        return AccountMapper.toDTO(account);
+        return AccountMapper.toAccountDTO(account);
     }
 }

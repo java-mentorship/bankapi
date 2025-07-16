@@ -1,5 +1,6 @@
 package br.com.leonardoraupp.apibancaria.infrastructure.entity;
 
+import br.com.leonardoraupp.apibancaria.domain.Account;
 import br.com.leonardoraupp.apibancaria.domain.Bank;
 import br.com.leonardoraupp.apibancaria.domain.Transaction;
 import jakarta.persistence.*;

@@ -14,7 +14,7 @@ public abstract class AccountMapper {
                 request.email(), request.birthDate(), request.agency(), request.number());
     }
 
-    public static OpenAccountResponse toDTO(Account domain) {
+    public static OpenAccountResponse toAccountDTO(Account domain) {
         if (domain == null) {
             return null;
         }

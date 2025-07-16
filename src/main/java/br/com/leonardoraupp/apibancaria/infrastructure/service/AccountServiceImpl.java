@@ -18,8 +18,7 @@ public class AccountServiceImpl implements AccountService {
     public Account createAccount(Account account) throws InvalidAccountException {
         AccountEntity accountEntity = AccountMapper.toEntity(account);
         validateAccount(account);
-        accountRepository.save(accountEntity);
-        return null;
+        return AccountMapper.toDomain(accountRepository.save(accountEntity));
     }
 
     private void validateAccount(Account account) throws InvalidAccountException {

@@ -10,4 +10,10 @@ public abstract class UserMapper {
         }
         return new UserEntity(user.getName(), user.getLastName(), user.getCpf(), user.getEmail(), user.getBirthDate());
     }
+    public static User toDomain(UserEntity user) {
+        if (user == null) {
+            return null;
+        }
+        return new User(user.getName(), user.getLastName(), user.getCpf(), user.getEmail(), user.getBirthDate());
+    }
 }
