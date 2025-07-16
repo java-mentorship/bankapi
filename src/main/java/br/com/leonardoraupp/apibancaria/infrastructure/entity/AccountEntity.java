@@ -3,7 +3,7 @@ package br.com.leonardoraupp.apibancaria.infrastructure.entity;
 import br.com.leonardoraupp.apibancaria.domain.Bank;
 import br.com.leonardoraupp.apibancaria.domain.Transaction;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +13,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "account")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -31,7 +30,11 @@ public class AccountEntity {
     protected List<Transaction> transactions;
     @ManyToOne
     protected Bank bank;
+
+    public AccountEntity(UserEntity holder, Double balance, Integer agency, Integer number) {
+        this.holder = holder;
+        this.balance = balance;
+        this.agency = agency;
+        this.number = number;
+    }
 }
-//  todo: Gerar todas as entidades que precisam serem persistidas.
-//   Retirar todos relacionamentos de domain para entity. Mapear todos relacioamentos.
-//   Criar mapper.

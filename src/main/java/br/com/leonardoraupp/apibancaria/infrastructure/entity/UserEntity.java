@@ -23,4 +23,12 @@ public class UserEntity {
     private String cpf;
     private String email;
     private LocalDate birthDate;
+
+    public UserEntity(String name, String lastName, String cpf, String email, LocalDate birthDate) {
+        this.name = name;
+        this.lastName = lastName;
+        this.cpf = cpf;
+        this.email = email;
+        this.birthDate = birthDate;
+    }
 }
