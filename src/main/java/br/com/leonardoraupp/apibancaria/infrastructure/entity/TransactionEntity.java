@@ -9,15 +9,19 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "transaction")
-@Getter
-@Setter
+@Table(name = "account_transaction")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Double value;
+    private Double type;
+    @Column(name = "transaction_date")
     private LocalDate date;
+    @ManyToOne
+    @JoinColumn(name = "account_id") //  foreign key
+    private AccountEntity accountEntity;
 }

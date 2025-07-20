@@ -1,8 +1,6 @@
 package br.com.leonardoraupp.apibancaria.infrastructure.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +15,10 @@ import java.util.Set;
 @Getter
 @Setter
 public class BankEntity {
-    @OneToMany
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String name;
+    @OneToMany(mappedBy = "bank")
     private Set<AccountEntity> accounts;
 }

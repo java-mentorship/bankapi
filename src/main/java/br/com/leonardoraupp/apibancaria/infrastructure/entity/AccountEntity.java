@@ -1,8 +1,5 @@
 package br.com.leonardoraupp.apibancaria.infrastructure.entity;
 
-import br.com.leonardoraupp.apibancaria.domain.Account;
-import br.com.leonardoraupp.apibancaria.domain.Bank;
-import br.com.leonardoraupp.apibancaria.domain.Transaction;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -21,18 +18,21 @@ public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
-    @ManyToOne
-    protected UserEntity holder;
+    @ManyToOne()
+    @JoinColumn(name = "holder_id")
+    protected HolderEntity holder;
     protected Double balance;
     protected Integer agency;
     protected Integer number;
+    @Column(name = "opening_date")
     protected LocalDate openingDate;
-    @OneToMany
-    protected List<Transaction> transactions;
+    @OneToMany(mappedBy = "accountEntity")
+    protected List<TransactionEntity> transactions;
     @ManyToOne
-    protected Bank bank;
+    @JoinColumn(name = "bank_id")
+    protected BankEntity bank;
 
-    public AccountEntity(UserEntity holder, Double balance, Integer agency, Integer number) {
+    public AccountEntity(HolderEntity holder, Double balance, Integer agency, Integer number) {
         this.holder = holder;
         this.balance = balance;
         this.agency = agency;

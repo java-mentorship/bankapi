@@ -7,24 +7,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "holder")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserEntity {
+public class HolderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Integer id;
     private String name;
     private String lastName;
     private String cpf;
     private String email;
     private LocalDate birthDate;
+    @OneToMany(mappedBy = "holder")
+    private Set<AccountEntity> accounts;
 
-    public UserEntity(String name, String lastName, String cpf, String email, LocalDate birthDate) {
+    public HolderEntity(String name, String lastName, String cpf, String email, LocalDate birthDate) {
         this.name = name;
         this.lastName = lastName;
         this.cpf = cpf;
