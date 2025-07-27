@@ -2,7 +2,7 @@ package br.com.leonardoraupp.apibancaria.domain;
 
 import java.time.LocalDate;
 
-public class User {
+public class Holder {
     private Integer id;
     private String name;
     private String lastName;
@@ -10,7 +10,7 @@ public class User {
     private String email;
     private LocalDate birthDate;
 
-    public User(String name, String lastName, String cpf, String email, LocalDate birthDate) {
+    public Holder(String name, String lastName, String cpf, String email, LocalDate birthDate) {
         this.name = name;
         this.lastName = lastName;
         this.cpf = cpf;
@@ -44,5 +44,9 @@ public class User {
 
     public LocalDate getBirthDate() {
         return birthDate;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

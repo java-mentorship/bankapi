@@ -3,16 +3,17 @@ package br.com.leonardoraupp.apibancaria.domain;
 import br.com.leonardoraupp.apibancaria.domain.enums.TransactionType;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
     private TransactionType type;
-    private Double value;
+    private BigDecimal value;
     private LocalDate date;
     private static DateTimeFormatter brFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public Transaction(TransactionType type, Double value, LocalDate date) {
+    public Transaction(TransactionType type, BigDecimal value, LocalDate date) {
         this.type = type;
         this.value = value;
         this.date = date;
@@ -25,7 +26,7 @@ public class Transaction {
         return type;
     }
 
-    public Double getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 

@@ -1,7 +1,7 @@
 package br.com.leonardoraupp.apibancaria.application.response;
 
 
-import br.com.leonardoraupp.apibancaria.domain.User;
+import java.math.BigDecimal;
 
-public record OpenAccountResponse( Integer id, String firstName, String lastName, Double balance,  Integer agency, Integer number) {
+public record OpenAccountResponse(Integer id, String firstName, String lastName, BigDecimal balance, Integer agency, Integer number) {
 }

@@ -3,32 +3,23 @@ package br.com.leonardoraupp.apibancaria.domain;
 
 import br.com.leonardoraupp.apibancaria.domain.enums.TransactionType;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 public class CheckingAccount extends Account {
-    public CheckingAccount(User holder, Integer agency, Integer number) {
+    public CheckingAccount(Holder holder, Integer agency, Integer number) {
         super(holder, agency, number);
     }
 
     public CheckingAccount(String firstName, String lastName, String cpf, String email, LocalDate localDate, Integer agency, Integer number) {
-        super(new User(firstName, lastName, cpf, email, localDate), agency, number);
+        super(new Holder(firstName, lastName, cpf, email, localDate), agency, number);
     }
 
-    @Override
-    public User getHolder() {
-        return this.holder;
-    }
 
     @Override
-    public Double getBalance() {
-        return this.balance;
-    }
-
-    @Override
-    public void deposit(double value) {
-        if (value > 0 && value < 1000000.0) {
-            this.balance += value;
+    public void deposit(BigDecimal value) {
+        if (value.compareTo(BigDecimal.ZERO) > 0) {
+            this.balance = this.balance.add(value);
             addTransaction(new Transaction(TransactionType.DEPOSIT, value, LocalDate.now()));
         } else {
             throw new IllegalArgumentException("Cannot complete the transaction. The deposit value is negative or higher than one million reals.");
@@ -36,39 +27,12 @@ public class CheckingAccount extends Account {
     }
 
     @Override
-    public void withdraw(double value) {
-        if (this.balance > value) {
-            this.balance -= value;
+    public void withdraw(BigDecimal value) {
+        if (this.balance.compareTo(value) > 0) {
+            this.balance = balance.subtract(value);
             addTransaction(new Transaction(TransactionType.WITHDRAW, value, LocalDate.now()));
         } else {
             throw new IllegalArgumentException("Cannot complete the transaction. Insufficient balance.");
         }
     }
-
-    @Override
-    public void addTransaction(Transaction object) {
-        this.transactions.add(object);
-    }
-
-    @Override
-    public List<Transaction> getTransactions() {
-        return this.transactions;
-    }
-
-    @Override
-    public Integer getAgency() {
-        return this.agency;
-    }
-
-    @Override
-    public Integer getNumber() {
-        return this.number;
-    }
-
-    @Override
-    public LocalDate getDateOpening() {
-        return this.openingDate;
-    }
-
-
 }

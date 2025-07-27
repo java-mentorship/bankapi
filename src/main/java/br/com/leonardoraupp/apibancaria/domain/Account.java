@@ -1,12 +1,13 @@
 package br.com.leonardoraupp.apibancaria.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
 public abstract class Account {
     protected Integer id;
-    protected User holder;
-    protected Double balance;
+    protected Holder holder;
+    protected BigDecimal balance;
     protected Integer agency;
     protected Integer number;
     protected LocalDate openingDate;
@@ -16,36 +17,46 @@ public abstract class Account {
     public Account() {
     }
 
-    public Account(User holder, Integer agency, Integer number) {
+    public Account(Holder holder, Integer agency, Integer number) {
         this.holder = holder;
         this.agency = agency;
         this.number = number;
-        this.balance = 0.0;
+        this.balance = BigDecimal.ZERO;
         this.openingDate = LocalDate.now();
 
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public abstract User getHolder();
+    public void setHolder(Holder holder) {
+        this.holder = holder;
+    }
 
-    public abstract Double getBalance();
+    public Holder getHolder() {
+        return holder;
+    }
 
-    public abstract void deposit(double value);
+    public BigDecimal getBalance() {
+        return balance;
+    }
 
-    public abstract void withdraw(double value);
+    public Integer getAgency() {
+        return agency;
+    }
 
-    public abstract void addTransaction(Transaction object);
+    public Integer getNumber() {
+        return number;
+    }
 
-    public abstract List<Transaction> getTransactions();
-
-    public abstract Integer getAgency();
-
-    public abstract Integer getNumber();
-
-    public abstract LocalDate getDateOpening();
+    public LocalDate getOpeningDate() {
+        return openingDate;
+    }
 
     @Override
     public boolean equals(Object object) {
@@ -57,5 +68,13 @@ public abstract class Account {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public abstract void deposit(BigDecimal value);
+
+    public abstract void withdraw(BigDecimal value);
+
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
     }
 }
