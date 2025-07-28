@@ -61,13 +61,16 @@ public class AccountServiceImpl implements AccountService {
             throw new InvalidAccountException("Account holder was not informed.");
         }
         if (account.getAgency() == null) {
-            throw new InvalidAccountException("Number agency was not informed");
+            throw new InvalidAccountException("Number agency was not informed.");
+        }
+        if (!(account.getAgency().equals(4))) {
+            throw new InvalidAccountException("Number agency informed is invalid.");
+        }
+        if (!(account.getNumber().equals(5))) {
+            throw new InvalidAccountException("Number agency informed is invalid.");
         }
         if (account.getNumber() == null) {
-            throw new InvalidAccountException("Account number was not informed");
+            throw new InvalidAccountException("Account number was not informed.");
         }
-//        todo complementar validações de conta e agencia como numero de digitos.
-//        todo: fazer validação do cpf além de verificar se é nulo e se existe.
-
     }
 }

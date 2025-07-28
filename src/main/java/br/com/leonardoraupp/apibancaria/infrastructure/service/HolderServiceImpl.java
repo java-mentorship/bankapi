@@ -28,27 +28,33 @@ public class HolderServiceImpl implements HolderService {
     }
 
     private void validateHolder(Holder holder) throws InvalidHolderException {
-        if (holder.getName().isBlank() || holder.getName().isEmpty() || holder.getName() == null) {
+        String holderCpf = convertCpf(holder.getCpf());
+        if (holder.getName() == null || holder.getName().isBlank()) {
             throw new InvalidHolderException("Holder name is obligatory");
         }
         if (holder.getLastName() == null || holder.getLastName().isBlank()) {
             throw new InvalidHolderException("Holder lastname is obligatory");
         }
-
-        if (holder.getCpf().isBlank() || holder.getCpf().isEmpty() || holder.getCpf() == null) {
+        if (holder.getCpf() == null || holder.getCpf().isBlank()) {
             throw new InvalidHolderException("Holder cpf is obligatory");
         }
-
-        if (holder.getEmail().isBlank() || holder.getEmail().isEmpty() || holder.getEmail() == null) {
+        if (!holderCpf.equals(11)) {
+            throw new InvalidHolderException("Holder cpf is invalid)");
+        }
+        if (holder.getEmail() == null || holder.getEmail().isBlank()) {
             throw new InvalidHolderException("Holder e-mail is obligatory");
         }
-        if (holder.getLastName().isEmpty() || holder.getLastName() == null) {
+        if (holder.getLastName() == null || holder.getLastName().isEmpty()) {
             throw new InvalidHolderException("Holder birthdate is obligatory");
         }
         Optional<Holder> holderByCpf = findHolderByCpf(holder.getCpf());
         if (holderByCpf.isPresent()) {
             throw new InvalidHolderException("Holder already exists");
         }
+    }
+
+    private String convertCpf(String cpf) {
+        return cpf.replaceAll("[^0-9]", "");
     }
 
     @Override
