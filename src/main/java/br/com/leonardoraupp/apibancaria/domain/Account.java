@@ -23,8 +23,8 @@ public abstract class Account {
         this.number = number;
         this.balance = BigDecimal.ZERO;
         this.openingDate = LocalDate.now();
-
     }
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -42,12 +42,24 @@ public abstract class Account {
         return holder;
     }
 
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
     public BigDecimal getBalance() {
         return balance;
     }
 
+    public void setAgency(Integer agency) {
+        this.agency = agency;
+    }
+
     public Integer getAgency() {
         return agency;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public Integer getNumber() {
@@ -70,9 +82,9 @@ public abstract class Account {
         return Objects.hash(id);
     }
 
-    public abstract void deposit(BigDecimal value);
+    public abstract void deposit(BigDecimal amount);
 
-    public abstract void withdraw(BigDecimal value);
+    public abstract void withdraw(BigDecimal amount);
 
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);

@@ -1,15 +1,18 @@
 package br.com.leonardoraupp.apibancaria.controller;
 
+import br.com.leonardoraupp.apibancaria.application.AccountDepositUseCase;
 import br.com.leonardoraupp.apibancaria.application.OpenAccountUseCase;
 import br.com.leonardoraupp.apibancaria.application.GetBalanceUseCase;
 import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
+import br.com.leonardoraupp.apibancaria.application.request.AccountDepositRequest;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import br.com.leonardoraupp.apibancaria.application.response.GetHolderBalanceResponse;
 import br.com.leonardoraupp.apibancaria.application.response.OpenAccountResponse;
 
 import br.com.leonardoraupp.apibancaria.application.request.GetHolderBalanceRequest;
+import br.com.leonardoraupp.apibancaria.application.response.TransactionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +24,12 @@ public class AccountController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
     private final OpenAccountUseCase openAccountUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
+    private final AccountDepositUseCase accountDepositUseCase;
 
-    public AccountController(OpenAccountUseCase openAccountUseCase, GetBalanceUseCase getBalanceUseCase) {
+    public AccountController(OpenAccountUseCase openAccountUseCase, GetBalanceUseCase getBalanceUseCase, AccountDepositUseCase accountDepositUseCase) {
         this.openAccountUseCase = openAccountUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
+        this.accountDepositUseCase = accountDepositUseCase;
     }
 
     @PostMapping
@@ -57,6 +62,21 @@ public class AccountController {
         } catch (AccountNotFoundException e) {
             LOGGER.error("Account informed does not exist: {}", e.getMessage(), e);
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> deposit(@PathVariable Integer id, @RequestBody AccountDepositRequest request) {
+        try {
+            TransactionResponse response = accountDepositUseCase.execute(id, request);
+            return ResponseEntity.ok().body(response);
+        } catch (AccountNotFoundException e) {
+            LOGGER.error("Account informed is invalid: {}", e.getMessage(), e);
+            return ResponseEntity.notFound().build();
+
+        } catch (InvalidHolderException e) {
+            LOGGER.error("Holder informed is invalid: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

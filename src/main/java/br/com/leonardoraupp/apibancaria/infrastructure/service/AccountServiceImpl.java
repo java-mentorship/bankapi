@@ -1,6 +1,11 @@
 package br.com.leonardoraupp.apibancaria.infrastructure.service;
 
 import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundException;
+import br.com.leonardoraupp.apibancaria.domain.Transaction;
+import br.com.leonardoraupp.apibancaria.domain.enums.Message;
+import br.com.leonardoraupp.apibancaria.domain.enums.TransactionType;
+import br.com.leonardoraupp.apibancaria.infrastructure.entity.TransactionEntity;
+import br.com.leonardoraupp.apibancaria.infrastructure.repository.TransactionRepository;
 import br.com.leonardoraupp.apibancaria.utility.AccountMapper;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
@@ -10,18 +15,22 @@ import br.com.leonardoraupp.apibancaria.domain.Account;
 import br.com.leonardoraupp.apibancaria.domain.Holder;
 import br.com.leonardoraupp.apibancaria.infrastructure.entity.AccountEntity;
 import br.com.leonardoraupp.apibancaria.infrastructure.repository.AccountRepository;
+import br.com.leonardoraupp.apibancaria.utility.TransactionMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
     private final HolderService holderService;
 
-    public AccountServiceImpl(AccountRepository accountRepository, HolderService holderService) {
+    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository, HolderService holderService) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
         this.holderService = holderService;
     }
 
@@ -53,9 +62,32 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.toDomain(accountEntity);
     }
 
+    //    TODO: Tirar dúvidas se coloco logs nesse método para quando o deposito falhar, quando conseguir realizar. Qual seria a camada mais indicada.
+    @Override
+    public Transaction deposit(Integer accountId, BigDecimal amount) throws InvalidHolderException, AccountNotFoundException {
+        Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
+        if (accountEntity.isEmpty()) {
+            throw new AccountNotFoundException("Account not found: " + accountId);
+        }
+        Account accountDomain = AccountMapper.toDomain(accountEntity.get());
+        validateAccount(accountDomain);
+        accountDomain.deposit(amount);
+        Transaction transaction = new Transaction(TransactionType.DEPOSIT, amount, Message.DEPOSIT_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
+        transactionRepository.save(TransactionMapper.toEntity(transaction));
+        accountRepository.save(AccountMapper.toEntity(accountDomain));
+        return transaction;
+    }
+
+    private void validateAccount(Account accountDomain) throws InvalidHolderException {
+//        TODO: Fazer mais validações para validar operações como depósito, saque, transferência.
+        if (accountDomain.getHolder() == null) {
+            throw new InvalidHolderException("Holder is null");
+        }
+    }
+
     private void validateNewAccount(Account account) throws InvalidAccountException {
         if (account == null) {
-            throw new InvalidAccountException("Account not informed.");
+            throw new InvalidAccountException("Account is null. It must be informed.");
         }
         if (account.getHolder() == null) {
             throw new InvalidAccountException("Account holder was not informed.");
@@ -63,14 +95,14 @@ public class AccountServiceImpl implements AccountService {
         if (account.getAgency() == null) {
             throw new InvalidAccountException("Number agency was not informed.");
         }
-        if (!(account.getAgency().equals(4))) {
-            throw new InvalidAccountException("Number agency informed is invalid.");
+        if (!(String.valueOf(account.getAgency()).length() == 4)) {
+            throw new InvalidAccountException("Agency number is invalid. It must be 4 digits.");
         }
-        if (!(account.getNumber().equals(5))) {
-            throw new InvalidAccountException("Number agency informed is invalid.");
+        if (!(String.valueOf(account.getNumber()).length() == 5)) {
+            throw new InvalidAccountException("Account number informed is invalid it must be 5.");
         }
         if (account.getNumber() == null) {
-            throw new InvalidAccountException("Account number was not informed.");
+            throw new InvalidAccountException("Account number is null. It must be informed.");
         }
     }
 }

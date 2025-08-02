@@ -18,6 +18,6 @@ public class OpenAccountUseCase {
 
     public OpenAccountResponse execute(OpenAccountRequest request) throws InvalidAccountException, InvalidHolderException {
         Account account = accountService.createAccount(AccountMapper.toDomain(request));
-        return AccountMapper.toAccountDTO(account);
+        return AccountMapper.toOpenAccountResponse(account);
     }
 }

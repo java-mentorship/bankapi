@@ -1,5 +1,6 @@
 package br.com.leonardoraupp.apibancaria.config;
 
+import br.com.leonardoraupp.apibancaria.application.AccountDepositUseCase;
 import br.com.leonardoraupp.apibancaria.application.GetBalanceUseCase;
 import br.com.leonardoraupp.apibancaria.application.OpenAccountUseCase;
 import br.com.leonardoraupp.apibancaria.application.service.AccountService;
@@ -17,5 +18,10 @@ public class GlobalConfig {
     @Bean
     public GetBalanceUseCase getBalanceUseCase(AccountService service) {
         return new GetBalanceUseCase(service);
+    }
+
+    @Bean
+    public AccountDepositUseCase accountDepositUseCase(AccountService accountService) {
+        return new AccountDepositUseCase(accountService);
     }
 }

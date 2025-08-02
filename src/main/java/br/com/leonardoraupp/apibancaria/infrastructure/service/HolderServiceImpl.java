@@ -38,7 +38,7 @@ public class HolderServiceImpl implements HolderService {
         if (holder.getCpf() == null || holder.getCpf().isBlank()) {
             throw new InvalidHolderException("Holder cpf is obligatory");
         }
-        if (!holderCpf.equals(11)) {
+        if (!(holderCpf.length() == 11)) {
             throw new InvalidHolderException("Holder cpf is invalid)");
         }
         if (holder.getEmail() == null || holder.getEmail().isBlank()) {

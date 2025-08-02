@@ -4,34 +4,39 @@ import br.com.leonardoraupp.apibancaria.domain.enums.TransactionType;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
     private TransactionType type;
-    private BigDecimal value;
-    private LocalDate date;
+    private BigDecimal amount;
+    private LocalDateTime moment;
+    private String message;
+    private Account account;
     private static DateTimeFormatter brFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public Transaction(TransactionType type, BigDecimal value, LocalDate date) {
+    public Transaction(TransactionType type, BigDecimal amount, String message, Account account) {
         this.type = type;
-        this.value = value;
-        this.date = date;
-    }
-
-    public Transaction(TransactionType transactionType, double value, LocalDate now) {
+        this.amount = amount;
+        this.moment = LocalDateTime.now();
+        this.message = message;
+        this.account = account;
     }
 
     public TransactionType getType() {
         return type;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getMoment() {
+        return moment;
+    }
+
+    public Account getAccount() {
+        return account;
     }
 
     @Override
@@ -39,9 +44,9 @@ public class Transaction {
         return type.getName() +
                 " de" +
                 " " +
-                String.format("%.2f", value) +
+                String.format("%.2f", amount) +
                 " em" +
                 " " +
-                date.format(brFormatter);
+                moment.format(brFormatter);
     }
 }

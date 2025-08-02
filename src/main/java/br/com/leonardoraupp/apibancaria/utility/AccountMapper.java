@@ -1,5 +1,6 @@
 package br.com.leonardoraupp.apibancaria.utility;
 
+import br.com.leonardoraupp.apibancaria.application.request.AccountDepositRequest;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import br.com.leonardoraupp.apibancaria.application.response.OpenAccountResponse;
 import br.com.leonardoraupp.apibancaria.domain.Account;
@@ -23,6 +24,7 @@ public abstract class AccountMapper {
                 HolderMapper.toDomain(accountEntity.getHolder()),
                 accountEntity.getAgency(),
                 accountEntity.getNumber());
+        account.setBalance(accountEntity.getBalance());
         account.setId(accountEntity.getId());
         return account;
     }
@@ -31,14 +33,23 @@ public abstract class AccountMapper {
         if (account == null) {
             return null;
         }
-        return new AccountEntity(HolderMapper.toEntity(account.getHolder()), account.getBalance(), account.getAgency(), account.getNumber());
+        AccountEntity accountEntity = new AccountEntity(HolderMapper.toEntity(account.getHolder()), account.getBalance(), account.getAgency(), account.getNumber());
+        accountEntity.setId(account.getId());
+        return accountEntity;
     }
 
-    public static OpenAccountResponse toAccountDTO(Account accountDomain) {
+    public static OpenAccountResponse toOpenAccountResponse(Account accountDomain) {
         if (accountDomain == null) {
             return null;
         }
         return new OpenAccountResponse(accountDomain.getId(), accountDomain.getHolder().getName(),
                 accountDomain.getHolder().getLastName(), accountDomain.getBalance(), accountDomain.getNumber(), accountDomain.getAgency());
     }
+
+//    public static AccountDepositResponse toAccountDepositResponse(Account accountDomain) {
+//        if (accountDomain == null) {
+//            return null;
+//        }
+//        return new AccountDepositResponse(accountDomain.getHolder(), accountDomain.getHolder(), "", accountDomain.getBalance(), );
+//    }
 }
