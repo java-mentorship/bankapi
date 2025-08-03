@@ -4,7 +4,6 @@ import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundExc
 import br.com.leonardoraupp.apibancaria.domain.Transaction;
 import br.com.leonardoraupp.apibancaria.domain.enums.Message;
 import br.com.leonardoraupp.apibancaria.domain.enums.TransactionType;
-import br.com.leonardoraupp.apibancaria.infrastructure.entity.TransactionEntity;
 import br.com.leonardoraupp.apibancaria.infrastructure.repository.TransactionRepository;
 import br.com.leonardoraupp.apibancaria.utility.AccountMapper;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
@@ -62,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.toDomain(accountEntity);
     }
 
-    //    TODO: Tirar dúvidas se coloco logs nesse método para quando o deposito falhar, quando conseguir realizar. Qual seria a camada mais indicada.
+    //    TODO: Tirar dúvidas se coloco logs nesse método para quando o deposito falhar, quando conseguir realizar. Qual seria a camada mais indicada(controller, serviço, caso de uso).
     @Override
     public Transaction deposit(Integer accountId, BigDecimal amount) throws InvalidHolderException, AccountNotFoundException {
         Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
@@ -72,11 +71,27 @@ public class AccountServiceImpl implements AccountService {
         Account accountDomain = AccountMapper.toDomain(accountEntity.get());
         validateAccount(accountDomain);
         accountDomain.deposit(amount);
+        accountRepository.save(AccountMapper.toEntity(accountDomain));
         Transaction transaction = new Transaction(TransactionType.DEPOSIT, amount, Message.DEPOSIT_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
         transactionRepository.save(TransactionMapper.toEntity(transaction));
-        accountRepository.save(AccountMapper.toEntity(accountDomain));
         return transaction;
     }
+
+    @Override
+    public Transaction withdraw(Integer accountId, BigDecimal amount) throws AccountNotFoundException, InvalidHolderException {
+        Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
+        if (accountEntity.isEmpty()) {
+            throw new AccountNotFoundException("Account not found: " + accountId);
+        }
+        Account accountDomain = AccountMapper.toDomain(accountEntity.get());
+        validateAccount(accountDomain);
+        accountDomain.withdraw(amount);
+        accountRepository.save(AccountMapper.toEntity(accountDomain));
+        Transaction transaction = new Transaction(TransactionType.WITHDRAW, amount, Message.WITHDRAW_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
+        transactionRepository.save(TransactionMapper.toEntity(transaction));
+        return transaction;
+    }
+
 
     private void validateAccount(Account accountDomain) throws InvalidHolderException {
 //        TODO: Fazer mais validações para validar operações como depósito, saque, transferência.

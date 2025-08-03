@@ -1,12 +1,8 @@
 package br.com.leonardoraupp.apibancaria.domain;
 
 
-import br.com.leonardoraupp.apibancaria.application.request.AccountDepositRequest;
-import br.com.leonardoraupp.apibancaria.domain.enums.TransactionType;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class CheckingAccount extends Account {
     public CheckingAccount(Holder holder, Integer agency, Integer number) {

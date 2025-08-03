@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TransactionEntity {
+public class TransactionEntity {    //TODO: Inserir a propriedade de valor para registrar o valor da transação no banco.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -1,12 +1,13 @@
 package br.com.leonardoraupp.apibancaria.controller;
 
 import br.com.leonardoraupp.apibancaria.application.AccountDepositUseCase;
+import br.com.leonardoraupp.apibancaria.application.AccountWithdrawUseCase;
 import br.com.leonardoraupp.apibancaria.application.OpenAccountUseCase;
 import br.com.leonardoraupp.apibancaria.application.GetBalanceUseCase;
 import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
-import br.com.leonardoraupp.apibancaria.application.request.AccountDepositRequest;
+import br.com.leonardoraupp.apibancaria.application.request.AccountTransactionRequest;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import br.com.leonardoraupp.apibancaria.application.response.GetHolderBalanceResponse;
 import br.com.leonardoraupp.apibancaria.application.response.OpenAccountResponse;
@@ -25,11 +26,13 @@ public class AccountController {
     private final OpenAccountUseCase openAccountUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
     private final AccountDepositUseCase accountDepositUseCase;
+    private final AccountWithdrawUseCase accountWithdrawUseCase;
 
-    public AccountController(OpenAccountUseCase openAccountUseCase, GetBalanceUseCase getBalanceUseCase, AccountDepositUseCase accountDepositUseCase) {
+    public AccountController(OpenAccountUseCase openAccountUseCase, GetBalanceUseCase getBalanceUseCase, AccountDepositUseCase accountDepositUseCase, AccountWithdrawUseCase accountWithdrawUseCase) {
         this.openAccountUseCase = openAccountUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
         this.accountDepositUseCase = accountDepositUseCase;
+        this.accountWithdrawUseCase = accountWithdrawUseCase;
     }
 
     @PostMapping
@@ -65,22 +68,34 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<?> deposit(@PathVariable Integer id, @RequestBody AccountDepositRequest request) {
+    @PostMapping("/{id}/deposit")
+    public ResponseEntity<?> deposit(@PathVariable Integer id, @RequestBody AccountTransactionRequest request) {
         try {
             TransactionResponse response = accountDepositUseCase.execute(id, request);
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.ok(response);
         } catch (AccountNotFoundException e) {
             LOGGER.error("Account informed is invalid: {}", e.getMessage(), e);
             return ResponseEntity.notFound().build();
-
         } catch (InvalidHolderException e) {
             LOGGER.error("Holder informed is invalid: {}", e.getMessage(), e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // todo: criar endpoints para deposito, saque, para busca uma conta, para varias contas, para deletar uma conta
-    // todo: criar endpoint para editar dados da conta e usuario.
+    @PostMapping("/{id}/withdraw")
+    //TODO: tirar dúvida se é uma boa prática RESTful inserir a para withdraw/deposit após o id para diferenciar os endpoints.
+    public ResponseEntity<?> withdraw(@PathVariable Integer id, @RequestBody AccountTransactionRequest request) {
+        try {
+            TransactionResponse response = accountWithdrawUseCase.execute(id, request);
+            return ResponseEntity.ok(response);
+        } catch (AccountNotFoundException e) {
+            LOGGER.error("Account informed is invalid: {}", e.getMessage(), e);
+            return ResponseEntity.notFound().build();
+        } catch (InvalidHolderException e) {
+            LOGGER.error("Holder informed is invalid: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
+    // TODO: Criar endpoints  para deposito em varias contas, para deletar uma conta,endpoint para editar dados da conta e cliente.
 }

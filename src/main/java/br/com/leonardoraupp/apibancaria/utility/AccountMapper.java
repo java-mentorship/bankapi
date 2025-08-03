@@ -1,6 +1,5 @@
 package br.com.leonardoraupp.apibancaria.utility;
 
-import br.com.leonardoraupp.apibancaria.application.request.AccountDepositRequest;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import br.com.leonardoraupp.apibancaria.application.response.OpenAccountResponse;
 import br.com.leonardoraupp.apibancaria.domain.Account;

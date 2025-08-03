@@ -8,15 +8,15 @@ import br.com.leonardoraupp.apibancaria.application.service.AccountService;
 import br.com.leonardoraupp.apibancaria.domain.Transaction;
 import br.com.leonardoraupp.apibancaria.utility.TransactionMapper;
 
-public class AccountDepositUseCase {
+public class AccountWithdrawUseCase {
     private final AccountService accountService;
 
-    public AccountDepositUseCase(AccountService accountService) {
+    public AccountWithdrawUseCase(AccountService accountService) {
         this.accountService = accountService;
     }
 
     public TransactionResponse execute(Integer accountId, AccountTransactionRequest request) throws AccountNotFoundException, InvalidHolderException {
-        Transaction deposit = accountService.deposit(accountId, request.amount());
-        return TransactionMapper.toTransactionResponse(deposit);
+        Transaction withdrawTransaction = accountService.withdraw(accountId, request.amount());
+        return TransactionMapper.toTransactionResponse(withdrawTransaction);
     }
 }
