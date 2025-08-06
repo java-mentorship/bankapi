@@ -4,7 +4,6 @@ import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundExc
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
 import br.com.leonardoraupp.apibancaria.domain.Account;
-import br.com.leonardoraupp.apibancaria.domain.Holder;
 import br.com.leonardoraupp.apibancaria.domain.Transaction;
 
 import java.math.BigDecimal;

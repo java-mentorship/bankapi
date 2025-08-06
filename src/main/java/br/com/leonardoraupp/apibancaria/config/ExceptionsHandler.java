@@ -3,6 +3,8 @@ package br.com.leonardoraupp.apibancaria.config;
 import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
+import br.com.leonardoraupp.apibancaria.config.response.InvalidHolderResponse;
+import br.com.leonardoraupp.apibancaria.domain.Holder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionsHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionsHandler.class);
 
-    // TODO: Criar um objeto de erro depois.
+    // TODO: Criar um objeto de erro depois. Tirar dúvida do que posso colocar nesse objeto de erro.
     @ExceptionHandler(InvalidHolderException.class)
-    public ResponseEntity<String> handleInvalidHolderException(InvalidHolderException e) {
+    public ResponseEntity<InvalidHolderResponse> handleInvalidHolderException(InvalidHolderException e) {
         LOGGER.error("Holder informed is invalid: {}", e.getMessage(), e);
-        return ResponseEntity.badRequest().body(e.getMessage());
+        InvalidHolderResponse invalidHolderResponse = new InvalidHolderResponse(e.getMessage());
+        return ResponseEntity.badRequest().body(invalidHolderResponse);
     }
 
     @ExceptionHandler(AccountNotFoundException.class)
