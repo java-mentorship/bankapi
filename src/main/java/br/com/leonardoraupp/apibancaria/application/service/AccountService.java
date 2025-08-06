@@ -4,6 +4,7 @@ import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundExc
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
 import br.com.leonardoraupp.apibancaria.domain.Account;
+import br.com.leonardoraupp.apibancaria.domain.Holder;
 import br.com.leonardoraupp.apibancaria.domain.Transaction;
 
 import java.math.BigDecimal;
@@ -11,9 +12,9 @@ import java.math.BigDecimal;
 public interface AccountService {
     Account createAccount(Account account) throws InvalidAccountException, InvalidHolderException;
 
-    Account getAccount(Integer accountId, String holderCpf) throws InvalidHolderException, AccountNotFoundException;
+    Account getAccount(Integer accountId, String cpf) throws InvalidHolderException, AccountNotFoundException;
 
-    Transaction deposit(Integer accountId, BigDecimal amount) throws InvalidHolderException, AccountNotFoundException;
+    Transaction deposit(Integer accountId, BigDecimal amount, String cpf) throws InvalidHolderException, AccountNotFoundException, InvalidAccountException;
 
-    Transaction withdraw(Integer accountId, BigDecimal amount) throws AccountNotFoundException, InvalidHolderException;
+    Transaction withdraw(Integer accountId, BigDecimal amount, String cpf) throws AccountNotFoundException, InvalidHolderException, InvalidAccountException;
 }

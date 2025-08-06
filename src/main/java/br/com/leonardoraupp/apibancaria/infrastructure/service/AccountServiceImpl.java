@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account createAccount(Account account) throws InvalidAccountException, InvalidHolderException {
-        validateNewAccount(account);
+        validateAccount(account);
         Optional<Holder> optionalUser = holderService.findHolderByCpf(account.getHolder().getCpf());
         if (optionalUser.isPresent()) {
             account.setHolder(optionalUser.get());
@@ -50,26 +50,25 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccount(Integer accountId, String holderCpf) throws InvalidHolderException, AccountNotFoundException {
-        Optional<AccountEntity> optionalAccountEntity = accountRepository.findById(accountId);
-        if (optionalAccountEntity.isEmpty()) {
+        Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
+        if (accountEntity.isEmpty()) {
             throw new AccountNotFoundException("Account not found: " + accountId);
         }
-        AccountEntity accountEntity = optionalAccountEntity.get();
-        if (!(accountEntity.getHolder().getCpf().equals(holderCpf))) {
+        if (!(accountEntity.get().getHolder().getCpf().equals(holderCpf))) {
             throw new InvalidHolderException("Holder cpf informed is invalid: " + holderCpf);
         }
-        return AccountMapper.toDomain(accountEntity);
+        return AccountMapper.toDomain(accountEntity.get());
     }
 
-    //    TODO: Tirar dúvidas se coloco logs nesse método para quando o deposito falhar, quando conseguir realizar. Qual seria a camada mais indicada(controller, serviço, caso de uso).
     @Override
-    public Transaction deposit(Integer accountId, BigDecimal amount) throws InvalidHolderException, AccountNotFoundException {
+    public Transaction deposit(Integer accountId, BigDecimal amount, String cpf) throws InvalidHolderException, AccountNotFoundException, InvalidAccountException {
         Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
         if (accountEntity.isEmpty()) {
             throw new AccountNotFoundException("Account not found: " + accountId);
         }
         Account accountDomain = AccountMapper.toDomain(accountEntity.get());
         validateAccount(accountDomain);
+        validateHolder(accountDomain, cpf);
         accountDomain.deposit(amount);
         accountRepository.save(AccountMapper.toEntity(accountDomain));
         Transaction transaction = new Transaction(TransactionType.DEPOSIT, amount, Message.DEPOSIT_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
@@ -78,13 +77,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Transaction withdraw(Integer accountId, BigDecimal amount) throws AccountNotFoundException, InvalidHolderException {
+    public Transaction withdraw(Integer accountId, BigDecimal amount, String cpf) throws AccountNotFoundException, InvalidHolderException, InvalidAccountException {
         Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
         if (accountEntity.isEmpty()) {
             throw new AccountNotFoundException("Account not found: " + accountId);
         }
         Account accountDomain = AccountMapper.toDomain(accountEntity.get());
         validateAccount(accountDomain);
+        validateHolder(accountDomain, cpf);
         accountDomain.withdraw(amount);
         accountRepository.save(AccountMapper.toEntity(accountDomain));
         Transaction transaction = new Transaction(TransactionType.WITHDRAW, amount, Message.WITHDRAW_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
@@ -92,20 +92,22 @@ public class AccountServiceImpl implements AccountService {
         return transaction;
     }
 
-
-    private void validateAccount(Account accountDomain) throws InvalidHolderException {
-//        TODO: Fazer mais validações para validar operações como depósito, saque, transferência.
-        if (accountDomain.getHolder() == null) {
+    private void validateHolder(Account account, String cpf) throws InvalidHolderException {
+        Optional<Holder> holder = holderService.findHolderByCpf(cpf);
+        if (account.getHolder() == null || cpf == null) {
             throw new InvalidHolderException("Holder is null");
+        }
+        if (holder.isEmpty()) {
+            throw new InvalidHolderException("Holder does not exist.");
+        }
+        if (!account.getHolder().getCpf().equals(holder.get().getCpf())) {
+            throw new InvalidHolderException("Holder object and holder from account are different.");
         }
     }
 
-    private void validateNewAccount(Account account) throws InvalidAccountException {
+    private void validateAccount(Account account) throws InvalidAccountException {
         if (account == null) {
             throw new InvalidAccountException("Account is null. It must be informed.");
-        }
-        if (account.getHolder() == null) {
-            throw new InvalidAccountException("Account holder was not informed.");
         }
         if (account.getAgency() == null) {
             throw new InvalidAccountException("Number agency was not informed.");

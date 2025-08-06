@@ -1,6 +1,7 @@
 package br.com.leonardoraupp.apibancaria.application;
 
 import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundException;
+import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
 import br.com.leonardoraupp.apibancaria.application.request.AccountTransactionRequest;
 import br.com.leonardoraupp.apibancaria.application.response.TransactionResponse;
@@ -15,8 +16,8 @@ public class AccountWithdrawUseCase {
         this.accountService = accountService;
     }
 
-    public TransactionResponse execute(Integer accountId, AccountTransactionRequest request) throws AccountNotFoundException, InvalidHolderException {
-        Transaction withdrawTransaction = accountService.withdraw(accountId, request.amount());
+    public TransactionResponse execute(Integer accountId, AccountTransactionRequest request) throws AccountNotFoundException, InvalidHolderException, InvalidAccountException {
+        Transaction withdrawTransaction = accountService.withdraw(accountId, request.amount(), request.cpf());
         return TransactionMapper.toTransactionResponse(withdrawTransaction);
     }
 }

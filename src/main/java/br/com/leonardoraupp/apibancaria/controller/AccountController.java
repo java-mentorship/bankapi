@@ -36,66 +36,33 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<?> openAccount(@RequestBody OpenAccountRequest request) {
-        try {
-            OpenAccountResponse response = openAccountUseCase.execute(request);
-            LOGGER.info("Account created.");
-            return ResponseEntity.ok(response);
-        } catch (InvalidAccountException e) {
-            LOGGER.error("Invalid account data: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (InvalidHolderException e) {
-            LOGGER.error("Invalid holder data while creating a new account: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("Failed to open account: {}", e.getMessage(), e);
-            return ResponseEntity.internalServerError()
-                    .body("Não foi possível atender a requisição, entre em contato com o suporte.");
-        }
+    public ResponseEntity<OpenAccountResponse> openAccount(@RequestBody OpenAccountRequest request) throws InvalidHolderException, InvalidAccountException {
+        OpenAccountResponse response = openAccountUseCase.execute(request);
+        LOGGER.info("Account created.");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBalance(@PathVariable Integer id, @RequestBody GetHolderBalanceRequest getBalanceRequest) {
-        try {
-            GetHolderBalanceResponse response = getBalanceUseCase.execute(id, getBalanceRequest);
-            return ResponseEntity.ok(response);
-        } catch (InvalidHolderException e) {
-            LOGGER.error("Holder informed is invalid: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (AccountNotFoundException e) {
-            LOGGER.error("Account informed does not exist: {}", e.getMessage(), e);
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<GetHolderBalanceResponse> getBalance(@PathVariable Integer id, @RequestBody GetHolderBalanceRequest getBalanceRequest)
+            throws AccountNotFoundException, InvalidHolderException {
+        GetHolderBalanceResponse response = getBalanceUseCase.execute(id, getBalanceRequest);
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{id}/deposit")
-    public ResponseEntity<?> deposit(@PathVariable Integer id, @RequestBody AccountTransactionRequest request) {
-        try {
-            TransactionResponse response = accountDepositUseCase.execute(id, request);
-            return ResponseEntity.ok(response);
-        } catch (AccountNotFoundException e) {
-            LOGGER.error("Account informed is invalid: {}", e.getMessage(), e);
-            return ResponseEntity.notFound().build();
-        } catch (InvalidHolderException e) {
-            LOGGER.error("Holder informed is invalid: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PatchMapping("/{id}/deposit")
+    public ResponseEntity<TransactionResponse> deposit(@PathVariable Integer id, @RequestBody AccountTransactionRequest request)
+            throws AccountNotFoundException, InvalidHolderException, InvalidAccountException {
+        TransactionResponse response = accountDepositUseCase.execute(id, request);
+        return ResponseEntity.ok(response);
+
     }
 
-    @PostMapping("/{id}/withdraw")
-    //TODO: tirar dúvida se é uma boa prática RESTful inserir a para withdraw/deposit após o id para diferenciar os endpoints.
-    public ResponseEntity<?> withdraw(@PathVariable Integer id, @RequestBody AccountTransactionRequest request) {
-        try {
-            TransactionResponse response = accountWithdrawUseCase.execute(id, request);
-            return ResponseEntity.ok(response);
-        } catch (AccountNotFoundException e) {
-            LOGGER.error("Account informed is invalid: {}", e.getMessage(), e);
-            return ResponseEntity.notFound().build();
-        } catch (InvalidHolderException e) {
-            LOGGER.error("Holder informed is invalid: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PatchMapping("/{id}/withdraw")
+    public ResponseEntity<TransactionResponse> withdraw(@PathVariable Integer id, @RequestBody AccountTransactionRequest request)
+            throws AccountNotFoundException, InvalidHolderException, InvalidAccountException {
+        TransactionResponse response = accountWithdrawUseCase.execute(id, request);
+        return ResponseEntity.ok(response);
     }
-
     // TODO: Criar endpoints  para deposito em varias contas, para deletar uma conta,endpoint para editar dados da conta e cliente.
 }
+// TODO: Proximas aulas: Spring Security, Testes unitários.
