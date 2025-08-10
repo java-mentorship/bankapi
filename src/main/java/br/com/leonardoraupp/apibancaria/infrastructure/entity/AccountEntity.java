@@ -2,6 +2,7 @@ package br.com.leonardoraupp.apibancaria.infrastructure.entity;
 
 import jakarta.persistence.*;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,9 +14,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "account")
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
 public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +30,8 @@ public class AccountEntity {
     protected LocalDate openingDate;
     @OneToMany(mappedBy = "accountEntity")
     protected List<TransactionEntity> transactions = new ArrayList<>();
+    @OneToMany(mappedBy = "destinationAccountEntity")
+    protected List<TransactionEntity> receivedTransfers = new ArrayList<>();
 
     public AccountEntity(HolderEntity holder, BigDecimal balance, Integer agency, Integer number) {
         this.holder = holder;

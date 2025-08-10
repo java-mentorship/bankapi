@@ -1,8 +1,7 @@
 package br.com.leonardoraupp.apibancaria.infrastructure.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -12,9 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "holder")
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 public class HolderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,15 +25,8 @@ public class HolderEntity {
     @OneToMany(mappedBy = "holder")
     private Set<AccountEntity> accounts = new HashSet<>();
     private LocalDateTime registeredDate;
-
-    public HolderEntity(String name, String lastName, String cpf, String email, LocalDate birthDate) {
-        this.name = name;
-        this.lastName = lastName;
-        this.cpf = cpf;
-        this.email = email;
-        this.birthDate = birthDate;
-        this.registeredDate = LocalDateTime.now();
-    }
+    @OneToOne
+    private UserEntity user;
 
     public HolderEntity(Integer id, String name, String lastName, String cpf, String email, LocalDate birthDate) {
         this.id = id;

@@ -1,0 +1,10 @@
+package br.com.leonardoraupp.apibancaria.infrastructure.repository;
+
+import br.com.leonardoraupp.apibancaria.infrastructure.entity.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+    Optional<UserEntity> findByUsername(String username);
+}
