@@ -1,9 +1,6 @@
 package br.com.leonardoraupp.apibancaria.config;
 
-import br.com.leonardoraupp.apibancaria.application.AccountDepositUseCase;
-import br.com.leonardoraupp.apibancaria.application.AccountWithdrawUseCase;
-import br.com.leonardoraupp.apibancaria.application.GetBalanceUseCase;
-import br.com.leonardoraupp.apibancaria.application.OpenAccountUseCase;
+import br.com.leonardoraupp.apibancaria.application.*;
 import br.com.leonardoraupp.apibancaria.application.service.AccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,5 +26,10 @@ public class GlobalConfig {
     @Bean
     public AccountWithdrawUseCase accountWithdrawUseCase(AccountService accountService) {
         return new AccountWithdrawUseCase(accountService);
+    }
+
+    @Bean
+    public AccountTransferenceUseCase accountTransferenceUseCase(AccountService accountService) {
+        return new AccountTransferenceUseCase(accountService);
     }
 }

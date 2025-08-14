@@ -13,6 +13,7 @@ public class Transaction {
     private LocalDateTime moment;
     private String message;
     private Account account;
+    private Account destinationAccount;
     private static DateTimeFormatter brFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public Transaction(TransactionType type, BigDecimal amount, String message, Account account) {
@@ -21,6 +22,15 @@ public class Transaction {
         this.moment = LocalDateTime.now();
         this.message = message;
         this.account = account;
+    }
+
+    public Transaction(TransactionType type, BigDecimal amount, String message, Account account, Account destinationAccount) {
+        this.type = type;
+        this.amount = amount;
+        this.moment = LocalDateTime.now();
+        this.message = message;
+        this.account = account;
+        this.destinationAccount = destinationAccount;
     }
 
     public TransactionType getType() {
@@ -35,18 +45,27 @@ public class Transaction {
         return moment;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public Account getAccount() {
         return account;
     }
 
+    public Account getDestinationAccount() {
+        return destinationAccount;
+    }
+
     @Override
     public String toString() {
-        return type.getName() +
-                " de" +
-                " " +
-                String.format("%.2f", amount) +
-                " em" +
-                " " +
-                moment.format(brFormatter);
+        return "Transaction{" +
+                "type=" + type +
+                ", amount=" + amount +
+                String.format(", moment= %2f", moment) +
+                ", message='" + message + '\'' +
+                ", account=" + account +
+                ", destinationAccount=" + destinationAccount +
+                '}';
     }
 }

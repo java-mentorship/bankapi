@@ -86,6 +86,8 @@ public abstract class Account {
 
     public abstract void withdraw(BigDecimal amount);
 
+    public abstract void transference(BigDecimal amount, Account account);
+
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
     }

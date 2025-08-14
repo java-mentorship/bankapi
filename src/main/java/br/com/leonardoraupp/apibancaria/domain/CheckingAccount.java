@@ -16,12 +16,11 @@ public class CheckingAccount extends Account {
     public CheckingAccount() {
     }
 
+    // Implementar validações e exceções
     @Override
     public void deposit(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) > 0 && amount.compareTo(new BigDecimal("1000000")) <= 0) {
             this.balance = this.balance.add(amount);
-        } else {
-            throw new IllegalArgumentException("Cannot complete the transaction. The deposit amount is negative or higher than one million reals.");
         }
     }
 
@@ -29,8 +28,14 @@ public class CheckingAccount extends Account {
     public void withdraw(BigDecimal amount) {
         if (this.balance.compareTo(amount) > 0) {
             this.balance = balance.subtract(amount);
-        } else {
-            throw new IllegalArgumentException("Cannot complete the transaction. Insufficient balance.");
+        }
+    }
+
+    @Override
+    public void transference(BigDecimal amount, Account account) {
+        if (this.balance.compareTo(amount) > 0) {
+            this.withdraw(amount);
+            account.deposit(amount);
         }
     }
 }

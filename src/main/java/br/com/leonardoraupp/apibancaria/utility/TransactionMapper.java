@@ -17,6 +17,11 @@ public class TransactionMapper {
         if (transaction == null) {
             throw new NullPointerException("Transaction is null.");
         }
-        return new TransactionEntity(transaction.getType(), transaction.getMoment(), AccountMapper.toEntity(transaction.getAccount()));
+        if (transaction.getDestinationAccount() != null) {
+            return new TransactionEntity(transaction.getType(), transaction.getAmount(), transaction.getMoment(),
+                    transaction.getMessage(), AccountMapper.toEntity(transaction.getAccount()), AccountMapper.toEntity(transaction.getDestinationAccount()));
+        }
+        return new TransactionEntity(transaction.getType(), transaction.getAmount(), transaction.getMoment(),
+                transaction.getMessage(), AccountMapper.toEntity(transaction.getAccount()));
     }
 }

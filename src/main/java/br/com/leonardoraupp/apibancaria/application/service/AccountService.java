@@ -16,4 +16,6 @@ public interface AccountService {
     Transaction deposit(Integer accountId, BigDecimal amount, String cpf) throws InvalidHolderException, AccountNotFoundException, InvalidAccountException;
 
     Transaction withdraw(Integer accountId, BigDecimal amount, String cpf) throws AccountNotFoundException, InvalidHolderException, InvalidAccountException;
+
+    Transaction transference(Integer accountId, BigDecimal amount, String cpf, Integer receiverAccountId) throws AccountNotFoundException, InvalidHolderException, InvalidAccountException;
 }

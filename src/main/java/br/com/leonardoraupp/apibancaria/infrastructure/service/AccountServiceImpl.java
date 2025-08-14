@@ -2,7 +2,7 @@ package br.com.leonardoraupp.apibancaria.infrastructure.service;
 
 import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundException;
 import br.com.leonardoraupp.apibancaria.domain.Transaction;
-import br.com.leonardoraupp.apibancaria.domain.enums.Message;
+import br.com.leonardoraupp.apibancaria.domain.enums.MessageType;
 import br.com.leonardoraupp.apibancaria.domain.enums.TransactionType;
 import br.com.leonardoraupp.apibancaria.infrastructure.repository.TransactionRepository;
 import br.com.leonardoraupp.apibancaria.utility.AccountMapper;
@@ -71,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
         validateHolder(accountDomain, cpf);
         accountDomain.deposit(amount);
         accountRepository.save(AccountMapper.toEntity(accountDomain));
-        Transaction transaction = new Transaction(TransactionType.DEPOSIT, amount, Message.DEPOSIT_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
+        Transaction transaction = new Transaction(TransactionType.DEPOSIT, amount, MessageType.DEPOSIT_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
         transactionRepository.save(TransactionMapper.toEntity(transaction));
         return transaction;
     }
@@ -87,7 +87,35 @@ public class AccountServiceImpl implements AccountService {
         validateHolder(accountDomain, cpf);
         accountDomain.withdraw(amount);
         accountRepository.save(AccountMapper.toEntity(accountDomain));
-        Transaction transaction = new Transaction(TransactionType.WITHDRAW, amount, Message.WITHDRAW_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
+        Transaction transaction = new Transaction(TransactionType.WITHDRAW, amount, MessageType.WITHDRAW_SUCCESSUL_MESSAGE.getDescription(), accountDomain);
+        transactionRepository.save(TransactionMapper.toEntity(transaction));
+        return transaction;
+    }
+
+    @Override
+    public Transaction transference(Integer accountId, BigDecimal amount, String receiverCpf, Integer receiverAccountId) throws AccountNotFoundException, InvalidHolderException, InvalidAccountException {
+        Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
+        Optional<AccountEntity> receiverAccountEntity = accountRepository.findById(receiverAccountId);
+        if (accountEntity.isEmpty()) {
+            throw new AccountNotFoundException("Account not found: " + accountId);
+        }
+        if (receiverAccountEntity.isEmpty()) {
+            throw new AccountNotFoundException("Account not found: " + receiverAccountId);
+        }
+        Optional<Holder> receiverHolder = holderService.findHolderByCpf(receiverCpf);
+        if (receiverHolder.isEmpty()) {
+            throw new InvalidHolderException("Holder does not exist.");
+        }
+        Account account = AccountMapper.toDomain(accountEntity.get());
+        validateAccount(account);
+        validateHolder(account, account.getHolder().getCpf());
+        Account receiverAccount = AccountMapper.toDomain(receiverAccountEntity.get());
+        validateAccount(receiverAccount);
+        validateHolder(receiverAccount, receiverCpf);
+        account.transference(amount, receiverAccount);
+        accountRepository.save(AccountMapper.toEntity(account));
+        accountRepository.save(AccountMapper.toEntity(receiverAccount));
+        Transaction transaction = new Transaction(TransactionType.TRANSFERENCE, amount, MessageType.TRANSFERENCE_SUCCESSFUL_MESSAGE.getDescription(), account, receiverAccount);
         transactionRepository.save(TransactionMapper.toEntity(transaction));
         return transaction;
     }

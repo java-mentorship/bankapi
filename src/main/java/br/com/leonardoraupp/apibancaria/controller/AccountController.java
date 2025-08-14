@@ -1,13 +1,11 @@
 package br.com.leonardoraupp.apibancaria.controller;
 
-import br.com.leonardoraupp.apibancaria.application.AccountDepositUseCase;
-import br.com.leonardoraupp.apibancaria.application.AccountWithdrawUseCase;
-import br.com.leonardoraupp.apibancaria.application.OpenAccountUseCase;
-import br.com.leonardoraupp.apibancaria.application.GetBalanceUseCase;
+import br.com.leonardoraupp.apibancaria.application.*;
 import br.com.leonardoraupp.apibancaria.application.exception.AccountNotFoundException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidAccountException;
 import br.com.leonardoraupp.apibancaria.application.exception.InvalidHolderException;
 import br.com.leonardoraupp.apibancaria.application.request.AccountTransactionRequest;
+import br.com.leonardoraupp.apibancaria.application.request.AccountTransferenceTransactionRequest;
 import br.com.leonardoraupp.apibancaria.application.request.OpenAccountRequest;
 import br.com.leonardoraupp.apibancaria.application.response.GetHolderBalanceResponse;
 import br.com.leonardoraupp.apibancaria.application.response.OpenAccountResponse;
@@ -27,12 +25,14 @@ public class AccountController {
     private final GetBalanceUseCase getBalanceUseCase;
     private final AccountDepositUseCase accountDepositUseCase;
     private final AccountWithdrawUseCase accountWithdrawUseCase;
+    private final AccountTransferenceUseCase accountTransferenceUseCase;
 
-    public AccountController(OpenAccountUseCase openAccountUseCase, GetBalanceUseCase getBalanceUseCase, AccountDepositUseCase accountDepositUseCase, AccountWithdrawUseCase accountWithdrawUseCase) {
+    public AccountController(OpenAccountUseCase openAccountUseCase, GetBalanceUseCase getBalanceUseCase, AccountDepositUseCase accountDepositUseCase, AccountWithdrawUseCase accountWithdrawUseCase, AccountTransferenceUseCase accountTransferenceUseCase) {
         this.openAccountUseCase = openAccountUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
         this.accountDepositUseCase = accountDepositUseCase;
         this.accountWithdrawUseCase = accountWithdrawUseCase;
+        this.accountTransferenceUseCase = accountTransferenceUseCase;
     }
 
     @PostMapping
@@ -63,6 +63,12 @@ public class AccountController {
         TransactionResponse response = accountWithdrawUseCase.execute(id, request);
         return ResponseEntity.ok(response);
     }
-    // TODO: Criar endpoints  para deposito em varias contas, para deletar uma conta,endpoint para editar dados da conta e cliente.
+
+    @PatchMapping("/{id}/transference")
+    public ResponseEntity<TransactionResponse> transference(@PathVariable Integer id, @RequestBody AccountTransferenceTransactionRequest request)
+            throws AccountNotFoundException, InvalidHolderException, InvalidAccountException {
+        TransactionResponse response = accountTransferenceUseCase.execute(id, request);
+        return ResponseEntity.ok(response);
+    }
+    // TODO: Criar endpoints  para deposito em varias contas, deletar uma conta, editar dados da conta, editar dados do cliente, pegar todas as contas, pegar todos cliente, delete cliente
 }
-// TODO: Proximas aulas: Spring Security, Testes unitários.
