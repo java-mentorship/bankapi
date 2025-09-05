@@ -28,10 +28,6 @@ public class AccountEntity {
     protected Integer number;
     @Column(name = "opening_date")
     protected LocalDate openingDate;
-    @OneToMany(mappedBy = "accountEntity")
-    protected List<TransactionEntity> transactions = new ArrayList<>();
-    @OneToMany(mappedBy = "destinationAccountEntity")
-    protected List<TransactionEntity> receivedTransfers = new ArrayList<>();
 
     public AccountEntity(HolderEntity holder, BigDecimal balance, Integer agency, Integer number) {
         this.holder = holder;

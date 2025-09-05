@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "holder")
@@ -22,8 +21,6 @@ public class HolderEntity {
     private String cpf;
     private String email;
     private LocalDate birthDate;
-    @OneToMany(mappedBy = "holder")
-    private Set<AccountEntity> accounts = new HashSet<>();
     private LocalDateTime registeredDate;
     @OneToOne
     private UserEntity user;

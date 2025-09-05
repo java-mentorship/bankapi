@@ -38,7 +38,6 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<OpenAccountResponse> openAccount(@RequestBody OpenAccountRequest request) throws InvalidHolderException, InvalidAccountException {
         OpenAccountResponse response = openAccountUseCase.execute(request);
-        LOGGER.info("Account created.");
         return ResponseEntity.ok(response);
     }
 
