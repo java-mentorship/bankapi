@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>br.com.leonardoraupp</groupId>
-    <artifactId>apibancaria</artifactId>
+    <artifactId>bankmanager</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>API Bancaria</name>
-    <description>Desenvolvimento de uma API Bancária</description>
+    <name>Bank Manager API</name>
+    <description>Bank Manager API project developed using SOLID architecture</description>
     <properties>
         <java.version>17</java.version>
     </properties>
