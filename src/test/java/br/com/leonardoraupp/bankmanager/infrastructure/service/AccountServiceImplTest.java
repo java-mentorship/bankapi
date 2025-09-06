@@ -40,33 +40,62 @@ public class AccountServiceImplTest {
     }
 
     @Test
-    public void testCreateAccountSuccessHolderExists() {
-//        preparação
+    public void testCreateAccountSuccessfullyIfHolderExists() {
+        Holder holderObject = createHolderObject();
         Account accountObject = createAccountObject();
+        accountObject.setHolder(holderObject);
         HolderEntity holderEntity = HolderMapper.toEntity(accountObject.getHolder());
         AccountEntity accountEntity = AccountMapper.toEntity(accountObject);
         when(holderRepository.findByCpf(any(String.class))).thenReturn(Optional.of(holderEntity));
         when(accountRepository.save(any(AccountEntity.class))).thenReturn(accountEntity);
-//        execução
+
         Account createdAccount = null;
         try {
             createdAccount = accountService.createAccount(accountObject);
         } catch (Exception e) {
             fail(e.getMessage());
         }
-//        validação
+
+        assertNotNull(createdAccount);
         assertNotNull(createdAccount);
         assertEquals(1972, createdAccount.getAgency());
         assertEquals(21250, createdAccount.getNumber());
         assertEquals("03402123003", createdAccount.getHolder().getCpf());
+        assertEquals("Fulano", createdAccount.getHolder().getName());
+        assertEquals("Beltrano", createdAccount.getHolder().getLastName());
+        assertEquals("fulano@mail.com", createdAccount.getHolder().getEmail());
     }
 
-    public void testCreateAccountSuccessHolderNotExists() {
+    @Test
+    public void testCreateAccountSuccessfullyIfHolderNotExists() {
+        Account accountObject = createAccountObject();
+        Holder holderObject = createHolderObject();
+        accountObject.setHolder(holderObject);
+        AccountEntity accountEntity = AccountMapper.toEntity(accountObject);
+        HolderEntity holderEntity = HolderMapper.toEntity(holderObject);
+        when(accountRepository.save(any(AccountEntity.class))).thenReturn(accountEntity);
+        when(holderRepository.findByCpf(any(String.class))).thenReturn(Optional.empty());
+        when(holderRepository.save(any(HolderEntity.class))).thenReturn(holderEntity);
+
+        Account createdAccount = null;
+        try {
+            createdAccount = accountService.createAccount(accountObject);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        assertNotNull(createdAccount);
+        assertNotNull(createdAccount);
+        assertEquals(1972, createdAccount.getAgency());
+        assertEquals(21250, createdAccount.getNumber());
+        assertEquals("03402123003", createdAccount.getHolder().getCpf());
+        assertEquals("Fulano", createdAccount.getHolder().getName());
+        assertEquals("Beltrano", createdAccount.getHolder().getLastName());
+        assertEquals("fulano@mail.com", createdAccount.getHolder().getEmail());
     }
 
     private Account createAccountObject() {
-        Holder holderObject = createHolderObject();
-        return new CheckingAccount(holderObject, 1972, 21250);
+        return new CheckingAccount(1972, 21250);
     }
 
     private Holder createHolderObject() {

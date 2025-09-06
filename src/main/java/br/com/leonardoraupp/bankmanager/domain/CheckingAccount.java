@@ -13,6 +13,11 @@ public class CheckingAccount extends Account {
         super(new Holder(firstName, lastName, cpf, email, localDate), agency, number);
     }
 
+    public CheckingAccount(Integer agency, Integer number) {
+        this.agency = agency;
+        this.number = number;
+    }
+
     public CheckingAccount() {
     }
 
